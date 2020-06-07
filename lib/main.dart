@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:news_reader/screens/animated_reg.dart';
 import 'package:news_reader/screens/home_page.dart';
 
 void main() => runApp(MyApp());
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
