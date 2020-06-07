@@ -1,5 +1,4 @@
 import "dart:async";
-import 'package:flutter/cupertino.dart';
 import "package:http/http.dart" as http;
 import "dart:convert";
 import "package:news_reader/api_models/base_model.dart";

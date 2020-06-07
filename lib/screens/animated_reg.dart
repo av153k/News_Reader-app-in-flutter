@@ -4,12 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HomePage extends StatefulWidget {
+class AnimatedWelcome extends StatefulWidget {
   @override
-  State<HomePage> createState() => new _HomePageState();
+  State<AnimatedWelcome> createState() => new _AnimatedWelcomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _AnimatedWelcomeState extends State<AnimatedWelcome> {
   double _height = 660.0;
   Timer _timerLogo;
   Timer _timerLogin;
@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   double _alignmentXSignup = 5.0;
   double _opacityLogo = 0.0;
 
-  _HomePageState() {
+  _AnimatedWelcomeState() {
     _timerLogo = new Timer(Duration(milliseconds: 1600), () {
       setState(() {
         _opacityLogo = 1.0;
