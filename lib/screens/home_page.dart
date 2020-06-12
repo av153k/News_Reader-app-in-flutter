@@ -4,6 +4,10 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:news_reader/assets/common_functions.dart';
 import 'package:news_reader/assets/options_to_pick.dart';
+import 'package:news_reader/api_models/base_model.dart';
+import 'package:news_reader/api_services/get_data.dart';
+
+NewsApiCallback _newsApiCallback = new NewsApiCallback();
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,13 +15,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String dropdownCountryValue = "wl";
-  String dropdownCategoryValue = "All";
+  String dropdownCountryValue = "in";
+  String dropdownCategoryValue = "Technology";
   List<String> countryList = countriesList();
+
+  Future<NewsClass> _newsClassFunc() {
+    return _newsApiCallback.getNewsData(
+        dropdownCountryValue, dropdownCategoryValue);
+  }
+
+  Future<NewsClass> _newsClass;
+
+  @override
+  void initState() {
+    super.initState();
+    _newsClass = _newsClassFunc();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -30,6 +47,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: ListView(
+        shrinkWrap: true,
         padding: EdgeInsets.all(10),
         children: <Widget>[
           Container(
@@ -42,9 +60,9 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 1),
                     ),
                   ], borderRadius: BorderRadius.circular(10)),
                   child: Container(
@@ -67,6 +85,7 @@ class _HomePageState extends State<HomePage> {
                         setState(
                           () {
                             dropdownCountryValue = newValue;
+                            _newsClass = _newsClassFunc();
                           },
                         );
                       },
@@ -85,9 +104,9 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 1),
                     ),
                   ], borderRadius: BorderRadius.circular(10)),
                   child: Container(
@@ -110,6 +129,7 @@ class _HomePageState extends State<HomePage> {
                         setState(
                           () {
                             dropdownCategoryValue = newValue;
+                            _newsClass = _newsClassFunc();
                           },
                         );
                       },
@@ -133,6 +153,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Container(
+            alignment: Alignment.centerLeft,
             height: MediaQuery.of(context).size.height * 0.1,
             child: Text(
               "Top Headlines",
@@ -142,36 +163,29 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.black),
             ),
           ),
-          Container(
-            height: MediaQuery.of(context).size.height * 0.15,
-            child: Card(
-              elevation: 9,
-              color: Colors.white,
-              child: Container(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  children: <Widget>[
-                    Container(width: MediaQuery.of(context).size.width*0.20,
-                    child: Image(
-                      image: AssetImage(
-                          "lib/assets/images/homepage_background.jpg"),
-                    ),),
-                    Column(
-                      children: <Widget>[
-                        Flexible(
-                          child: Text(
-                            "This is the headline of today's news that you are viewing.",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
+          FutureBuilder(
+            future: _newsClass,
+            builder:
+                (BuildContext context, AsyncSnapshot<NewsClass> _newsSnapshot) {
+              if (_newsSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              return ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                controller: ScrollController(),
+                itemCount: _newsSnapshot.data.totalResults,
+                itemBuilder: (context, index) {
+                  Articles _article = _newsSnapshot.data.articles[index];
+                  return getNewscard(context, _article.title,
+                      _article.source.name, _article.urlToImage);
+                },
+              );
+            },
+          ),
+          
         ],
       ),
     );

@@ -12,4 +12,4 @@ List countriesList() {
   return countryList;
 }
 
-var categories = ["All", "Technology", "Sports", "Politics", "Entertainment"];
+var categories = ["All", "Technology", "Sports", "Politics", "Entertainment", "Buisness"];
