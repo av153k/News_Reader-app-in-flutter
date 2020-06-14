@@ -8,26 +8,22 @@ class NewsApiCallback {
   NewsApiCallback();
 
   Future<NewsClass> getNewsData(String countryCode, String category) async {
-    String _category = "";
+    String _category = "category=";
 
     if (category == "All") {
       _category = "";
     } else {
-      _category = category.toLowerCase();
+      _category += category.toLowerCase();
+      _category += "&";
     }
 
-    String _country = "";
-    if (countryCode == "wl") {
-      _country = "";
-    } else {
-      _country = countryCode;
-    }
+    String _country = "country=";
+    _country += countryCode + "&";
 
-    String apiUrl = "http://newsapi.org/v2/top-headlines?country=" +
+    String apiUrl = "http://newsapi.org/v2/top-headlines?" +
         _country +
-        "&category=" +
         _category +
-        "&sortBy=popularity&apiKey=" +
+        "sortBy=popularity&language=en&pageSize=100&apiKey=" +
         apiKey;
 
     var res = await http.get(apiUrl);

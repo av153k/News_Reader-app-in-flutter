@@ -1,5 +1,4 @@
 Map countries = {
-  "wl": "World",
   "in": "India",
   "us": "United States of America",
 };
@@ -12,4 +11,13 @@ List countriesList() {
   return countryList;
 }
 
-var categories = ["All", "Technology", "Sports", "Politics", "Entertainment", "Buisness"];
+var categories = [
+  "All",
+  "Health",
+  "Science",
+  "Technology",
+  "Sports",
+  "Politics",
+  "Entertainment",
+  "Business"
+];

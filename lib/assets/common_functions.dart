@@ -1,6 +1,5 @@
 import "package:flutter/material.dart";
 import "package:flag/flag.dart";
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
 import "package:news_reader/assets/options_to_pick.dart";
 
@@ -10,7 +9,13 @@ Widget getCountry(String code) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        getFlagIcon(code),
+        Container(
+          child: Flag(
+            code,
+            height: 20,
+            width: 30,
+          ),
+        ),
         SizedBox(
           width: 10,
         ),
@@ -23,22 +28,6 @@ Widget getCountry(String code) {
       ],
     ),
   );
-}
-
-Widget getFlagIcon(String code) {
-  if (code == "wl") {
-    return Container(
-      child: Icon(Octicons.globe, size: 25),
-    );
-  } else {
-    return Container(
-      child: Flag(
-        code,
-        height: 20,
-        width: 30,
-      ),
-    );
-  }
 }
 
 Widget getText(
@@ -57,69 +46,32 @@ Widget getText(
   );
 }
 
-Widget getNewscard(
-    BuildContext context, String title, String source, String imageUrl) {
-  return Container(
-    height: MediaQuery.of(context).size.height * 0.15,
-    child: Card(
-      elevation: 9,
-      color: Colors.white,
-      child: Container(
-        padding: EdgeInsets.all(5),
-        child: Row(
-          verticalDirection: VerticalDirection.down,
-          children: <Widget>[
-            Expanded(child: getImage(imageUrl)),
-            SizedBox(width: 10),
-            Flexible(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "$title",
-                    style: GoogleFonts.crimsonText(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 20),
-                        color: Colors.black),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Source",
-                        style: GoogleFonts.crimsonText(
-                            textStyle: TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 20),
-                            color: Colors.black),
-                      ),
-                      Icon(
-                        Octicons.triangle_right,
-                        size: 18,
-                      ),
-                      Text(
-                        "$source",
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.crimsonText(
-                            textStyle: TextStyle(
-                                fontWeight: FontWeight.w400, fontSize: 20),
-                            color: Colors.black),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}
-
-Widget getImage(String imageUrl) {
+Widget getImage(BuildContext context, String imageUrl) {
   if (imageUrl == null) {
-    return Icon(Icons.broken_image);
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.25,
+      child: Icon(Icons.broken_image, size: 50),
+    );
   } else {
-    return Image.network(imageUrl, fit: BoxFit.fitHeight);
+    return Image.network(
+      imageUrl,
+      height: MediaQuery.of(context).size.height * 0.25,
+      loadingBuilder: (BuildContext context, Widget child,
+          ImageChunkEvent loadingProgress) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: CircularProgressIndicator(
+            value: loadingProgress.expectedTotalBytes != null
+                ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes
+                : null,
+          ),
+        );
+      },
+      errorBuilder: (context, url, error) => Container(
+        height: MediaQuery.of(context).size.height * 0.25,
+        child: Icon(Icons.broken_image, size: 50),
+      ),
+    );
   }
 }

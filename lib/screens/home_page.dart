@@ -6,6 +6,8 @@ import 'package:news_reader/assets/common_functions.dart';
 import 'package:news_reader/assets/options_to_pick.dart';
 import 'package:news_reader/api_models/base_model.dart';
 import 'package:news_reader/api_services/get_data.dart';
+import 'package:news_reader/screens/views/card_view.dart';
+import 'package:news_reader/screens/views/compact_view.dart';
 
 NewsApiCallback _newsApiCallback = new NewsApiCallback();
 
@@ -16,7 +18,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String dropdownCountryValue = "in";
-  String dropdownCategoryValue = "Technology";
+  String dropdownCategoryValue = "All";
   List<String> countryList = countriesList();
 
   Future<NewsClass> _newsClassFunc() {
@@ -26,10 +28,15 @@ class _HomePageState extends State<HomePage> {
 
   Future<NewsClass> _newsClass;
 
+  //for changing the views
+  Widget _currentView;
+  IconData _viewChangeIcon = Icons.view_agenda;
+
   @override
   void initState() {
     super.initState();
     _newsClass = _newsClassFunc();
+    _currentView = futureCompact(_newsClass);
   }
 
   @override
@@ -51,20 +58,23 @@ class _HomePageState extends State<HomePage> {
         padding: EdgeInsets.all(10),
         children: <Widget>[
           Container(
-            height: MediaQuery.of(context).size.height * 0.1,
+            height: MediaQuery.of(context).size.height * 0.08,
             alignment: Alignment.center,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 Container(
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: Offset(0, 1),
-                    ),
-                  ], borderRadius: BorderRadius.circular(10)),
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: Offset(0, 1),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -86,6 +96,11 @@ class _HomePageState extends State<HomePage> {
                           () {
                             dropdownCountryValue = newValue;
                             _newsClass = _newsClassFunc();
+                            if (_viewChangeIcon == Icons.view_list) {
+                              _currentView = futureCard(_newsClass);
+                            } else {
+                              _currentView = futureCompact(_newsClass);
+                            }
                           },
                         );
                       },
@@ -130,6 +145,11 @@ class _HomePageState extends State<HomePage> {
                           () {
                             dropdownCategoryValue = newValue;
                             _newsClass = _newsClassFunc();
+                            if (_viewChangeIcon == Icons.view_list) {
+                              _currentView = futureCard(_newsClass);
+                            } else {
+                              _currentView = futureCompact(_newsClass);
+                            }
                           },
                         );
                       },
@@ -153,39 +173,40 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           Container(
-            alignment: Alignment.centerLeft,
-            height: MediaQuery.of(context).size.height * 0.1,
-            child: Text(
-              "Top Headlines",
-              style: GoogleFonts.crimsonText(
-                  textStyle:
-                      TextStyle(fontWeight: FontWeight.w300, fontSize: 30),
-                  color: Colors.black),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.centerLeft,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  child: Text(
+                    "Top Headlines",
+                    style: GoogleFonts.crimsonText(
+                        textStyle: TextStyle(
+                            fontWeight: FontWeight.w300, fontSize: 30),
+                        color: Colors.black),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(_viewChangeIcon),
+                  onPressed: () {
+                    setState(
+                      () {
+                        if (_viewChangeIcon == Icons.view_list) {
+                          _viewChangeIcon = Icons.view_agenda;
+                          _currentView = futureCompact(_newsClass);
+                        } else {
+                          _viewChangeIcon = Icons.view_list;
+                          _currentView = futureCard(_newsClass);
+                        }
+                      },
+                    );
+                  },
+                )
+              ],
             ),
           ),
-          FutureBuilder(
-            future: _newsClass,
-            builder:
-                (BuildContext context, AsyncSnapshot<NewsClass> _newsSnapshot) {
-              if (_newsSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              return ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                controller: ScrollController(),
-                itemCount: _newsSnapshot.data.totalResults,
-                itemBuilder: (context, index) {
-                  Articles _article = _newsSnapshot.data.articles[index];
-                  return getNewscard(context, _article.title,
-                      _article.source.name, _article.urlToImage);
-                },
-              );
-            },
-          ),
-          
+          _currentView,
         ],
       ),
     );
