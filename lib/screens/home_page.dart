@@ -42,21 +42,25 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        title: Text(
-          "News Reader",
-          style: GoogleFonts.crimsonText(
-            textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
-            color: Colors.black,
-          ),
-        ),
-      ),
+      backgroundColor: Colors.white,
       body: ListView(
         shrinkWrap: true,
         padding: EdgeInsets.all(10),
         children: <Widget>[
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+            alignment: Alignment.center,
+            color: Colors.white,
+            child: Text(
+              "News Reader",
+              style: GoogleFonts.crimsonText(
+                textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+                color: Colors.black,
+              ),
+            ),
+          ),
           Container(
             height: MediaQuery.of(context).size.height * 0.08,
             alignment: Alignment.center,

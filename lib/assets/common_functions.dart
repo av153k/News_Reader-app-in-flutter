@@ -9,13 +9,6 @@ Widget getCountry(String code) {
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Container(
-          child: Flag(
-            code,
-            height: 20,
-            width: 30,
-          ),
-        ),
         SizedBox(
           width: 10,
         ),

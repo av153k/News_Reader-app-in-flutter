@@ -8,60 +8,56 @@ Widget getNewsCompact(
     BuildContext context, String title, String source, String imageUrl) {
   return Container(
     height: MediaQuery.of(context).size.height * 0.15,
-    child: Card(
-      elevation: 9,
-      color: Colors.white,
-      child: Container(
-        padding: EdgeInsets.all(5),
-        child: Row(
-          verticalDirection: VerticalDirection.down,
-          children: <Widget>[
-            Expanded(
-              child: getImage(context, imageUrl),
-            ),
-            SizedBox(width: 10),
-            Flexible(
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "$title",
-                    style: GoogleFonts.crimsonText(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 20),
-                        color: Colors.black),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        "Source",
+    child: Container(
+      padding: EdgeInsets.all(5),
+      child: Row(
+        verticalDirection: VerticalDirection.down,
+        children: <Widget>[
+          Expanded(
+            child: getImage(context, imageUrl),
+          ),
+          SizedBox(width: 10),
+          Flexible(
+            child: Column(
+              children: <Widget>[
+                Text(
+                  "$title",
+                  style: GoogleFonts.crimsonText(
+                      textStyle:
+                          TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                      color: Colors.black),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Row(
+                  children: <Widget>[
+                    Text(
+                      "Source",
+                      style: GoogleFonts.crimsonText(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.w400, fontSize: 20),
+                          color: Colors.black),
+                    ),
+                    Icon(
+                      Octicons.triangle_right,
+                      size: 18,
+                    ),
+                    Flexible(
+                      child: Text(
+                        "$source",
+                        overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.crimsonText(
                             textStyle: TextStyle(
                                 fontWeight: FontWeight.w400, fontSize: 20),
                             color: Colors.black),
                       ),
-                      Icon(
-                        Octicons.triangle_right,
-                        size: 18,
-                      ),
-                      Flexible(
-                        child: Text(
-                          "$source",
-                          overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.crimsonText(
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.w400, fontSize: 20),
-                              color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
+                    ),
+                  ],
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     ),
   );
@@ -85,8 +81,8 @@ Widget futureCompact(Future<NewsClass> _newsClass) {
             itemCount: _newsSnapshot.data.articles.length,
             itemBuilder: (context, index) {
               Articles _article = _newsSnapshot.data.articles[index];
-              return getNewsCompact(context, _article.title, _article.source.name,
-                  _article.urlToImage);
+              return getNewsCompact(context, _article.title,
+                  _article.source.name, _article.urlToImage);
             },
           ),
         ],
